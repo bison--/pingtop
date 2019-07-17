@@ -1,5 +1,6 @@
 import socket
 import time
+from datetime import datetime
 
 
 class PingTop:
@@ -15,6 +16,10 @@ class PingTop:
         self.active = True
         self.ping_method = PingTop.PING_MODE_SHELL
         self.renderer = RenderPing(self.ping_address)
+        self.total_pings = 0
+        self.total_errors = 0
+        self.total_time = 0
+        self.started = time.time()
 
     def ping(self):
         if self.ping_method == PingTop.PING_MODE_SHELL:
@@ -23,6 +28,13 @@ class PingTop:
             delay = self._ping_python()
         else:
             raise Exception('PING method not implemented.')
+
+        self.total_pings += 1
+
+        if delay >= 0:
+            self.total_time += delay
+        else:
+            self.total_errors += 1
 
         self.time_list.append(delay)
 
@@ -63,7 +75,7 @@ class PingTop:
             return -1
 
     def do_render(self):
-        self.renderer.render(self.time_list)
+        self.renderer.render(self.time_list, self.started, self.total_pings, self.total_errors)
 
     def run(self):
         while self.active:
@@ -80,9 +92,8 @@ class RenderPing:
         self.renderHeight = 10
         self.renderWidth = 75
         self._output_rows = [' '] * 10
-        #print(self._output_rows)
 
-    def render(self, time_list):
+    def render(self, time_list, started, total_pings, total_errors):
         # print(timeList)
         self._output_rows = [' '] * 10
         longest_time = 0
@@ -91,27 +102,27 @@ class RenderPing:
         all_combined_count = 0
         error_count = 0
 
-        for time in time_list:
-            if time > longest_time:
-                longest_time = time
+        for duration in time_list:
+            if duration > longest_time:
+                longest_time = duration
 
-            if time > 0:
-                if time < shortest_time or shortest_time == 0:
-                    shortest_time = time
+            if duration > 0:
+                if duration < shortest_time or shortest_time == 0:
+                    shortest_time = duration
 
-                all_combined += time
+                all_combined += duration
                 all_combined_count += 1
-            elif time == -1:
+            elif duration == -1:
                 error_count += 1
 
-        for time in time_list:
+        for duration in time_list:
             printable_val = 0
-            if time > 0:
-                percentage_of_max = RenderPing.get_percentage(time, longest_time)
-                #print(percentage_of_max)
+            if duration > 0:
+                percentage_of_max = RenderPing.get_percentage(duration, longest_time)
                 printable_val = int(percentage_of_max)
             else:
-                printable_val = time
+                printable_val = duration
+
             self.add_column(printable_val)
 
         average = 0
@@ -122,15 +133,22 @@ class RenderPing:
         print("\033[0;0H")
 
         if self.host_name is not '':
-            print(" ## HOST: {0}".format(self.host_name))
+            print(" ## HOST: {0} | started at {1} | runtime  {2}".format(
+                self.host_name,
+                datetime.fromtimestamp(started).strftime('%Y-%m-%d %H:%M:%S'),
+                (datetime.fromtimestamp(time.time()) - datetime.fromtimestamp(started))
+            ))
 
         for row in reversed(self._output_rows):
             print(row)
 
-        print(" Longest:  {:08.5f}".format(longest_time))
-        print(" Shortest: {:08.5f}".format(shortest_time))
-        print(" Average:  {:08.5f}".format(average))
-        print(" ERROR:    {0}".format(error_count))
+        print(" Longest:  {: 10.5f}".format(longest_time))
+        print(" Shortest: {: 10.5f}".format(shortest_time))
+        print(" Average:  {: 10.5f}".format(average))
+        print(" ERROR:        {: 6}".format(error_count))
+        print(" ERRORS TOTAL: {: 6}".format(total_errors))
+        print(" PINGS TOTAL:  {: 6}".format(total_pings))
+        print(" ERROR RATE:  {: 6.2f}%".format(RenderPing.get_percentage(total_errors, total_pings)))
 
     def add_column(self, height):
         bar_char = '#'
@@ -151,8 +169,8 @@ class RenderPing:
                 self._output_rows[row] += ' '
 
     @staticmethod
-    def get_percentage(time_val, max_val):
-        return (time_val * 100) / max_val
+    def get_percentage(_val, _max_val):
+        return (_val * 100) / _max_val
 
 
 if __name__ == "__main__":

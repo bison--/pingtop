@@ -16,7 +16,7 @@ Specify a host to ping with "--host"
 
 ### advanced / help
 
-```bash
+```
 usage: start.py [-h] [--host HOST] [--mode PING_MODE] [--port TCP_PING_PORT]
                 [--log SAVE_LOG_PATH]
 

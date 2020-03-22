@@ -73,7 +73,7 @@ class PingShell:
             ping.kill()
 
         try:
-            return float(avg_rtt) / 100
+            return float(avg_rtt) / 1000
         except ValueError:
             return -1
 

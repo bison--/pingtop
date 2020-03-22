@@ -1,5 +1,5 @@
 # pingtop
-tiny top like program that visualises the ping to a host
+tiny top like program that visualizes the ping to a host
 
 ## RUN
 
@@ -48,3 +48,7 @@ run
 docker run -it -e HOST='twitch.tv' pingtop
 ```
 
+## CROSS-LINKS
+
+On dockerhub: https://hub.docker.com/repository/docker/generalbison/pingtop  
+On github: https://github.com/bison--/pingtop

@@ -45,13 +45,13 @@ class PingShell:
             [out, err] = ping.communicate(timeout=timeout)
             # print(out)
             if ping.returncode == 0:
-                re_result = re.search("rtt min/avg/max/mdev = (\d+.\d+)/(\d+.\d+)/(\d+.\d+)/(\d+.\d+)", str(out))
+                re_result = re.search(r"rtt min/avg/max/mdev = (\d+.\d+)/(\d+.\d+)/(\d+.\d+)/(\d+.\d+)", str(out))
                 avg_rtt = re_result.group(1)
         except subprocess.TimeoutExpired:
             ping.kill()
 
         try:
-            return float(avg_rtt) / 100
+            return float(avg_rtt) / 1000
         except ValueError:
             return -1
 

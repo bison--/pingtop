@@ -1,4 +1,5 @@
 import time
+import statistics
 from datetime import datetime
 
 
@@ -6,6 +7,9 @@ class RenderPing:
 
     def __init__(self, host_name):
         self.host_name = host_name
+        self.mode_name = ''
+        self.mode_id = 0
+        self.mode_port = 0
 
         # you can configure the output chart, maybe with some nice colors
         self.bar_char_value = '#'
@@ -42,11 +46,14 @@ class RenderPing:
         for i in range(self.renderWidth - len(time_list)):
             self.add_column(-2)
 
+        times_bigger_zero = []
+
         for duration in time_list:
             printable_val = 0
             if duration > 0:
                 percentage_of_max = RenderPing.get_percentage(duration, longest_time)
                 printable_val = int(percentage_of_max)
+                times_bigger_zero.append(duration)
             else:
                 printable_val = duration
 
@@ -56,12 +63,28 @@ class RenderPing:
         if all_combined_count > 0:
             average = all_combined / all_combined_count
 
+        median = 0
+        deviation = 0
+        if len(times_bigger_zero) >= 2:
+            median = statistics.median(times_bigger_zero)
+            deviation = statistics.stdev(times_bigger_zero)
+
         print('\x1b[2J')
         print("\033[0;0H")
 
         if self.host_name is not '':
-            print(" ## HOST: {0} | started at {1} | runtime  {2}".format(
+            port_string = ''
+            if self.mode_id == 2:
+                port_string = 'port: {0}'.format(self.mode_port)
+
+            print(" ## HOST: {0} | MODE {2}: {1} {3}".format(
                 self.host_name,
+                self.mode_name,
+                self.mode_id,
+                port_string
+            ))
+
+            print(" ## started at {0} | runtime {1}".format(
                 datetime.fromtimestamp(started).strftime('%Y-%m-%d %H:%M:%S'),
                 (datetime.fromtimestamp(int(time.time())) - datetime.fromtimestamp(int(started)))
             ))
@@ -69,11 +92,14 @@ class RenderPing:
         for row in reversed(self._output_rows):
             print(row)
 
-        print(" Longest:  {: 10.5f}".format(longest_time), end=' '*5)
-        print(" Average:  {: 10.5f}".format(average))
+        print(" Last PING:   {: 10.5f}".format(time_list[-1]), end=' '*5)
+        print(" Average:     {: 10.5f}".format(average))
 
-        print(" Shortest: {: 10.5f}".format(shortest_time), end=' '*5)
-        print(" Last:     {: 10.5f}".format(time_list[-1]))
+        print(" Longest:     {: 10.5f}".format(longest_time), end=' '*5)
+        print(" Shortest:    {: 10.5f}".format(shortest_time))
+
+        print(" median:      {: 10.5f}".format(median), end=' ' * 5)
+        print(" s.deviation: {: 10.5f}".format(deviation))
 
         print(" ERROR:        {: 6}".format(error_count))
         print(" ERRORS TOTAL: {: 6}".format(total_errors))

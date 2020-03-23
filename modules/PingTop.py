@@ -29,13 +29,16 @@ class PingTop:
         return {
             PingTop.PING_MODE_PYTHON: 'python module',
             PingTop.PING_MODE_SHELL: 'shell (system ping)',
-            PingTop.PING_MODE_TCP_PING: 'TCP PING (needs a host with an open port, default: 80)',
+            PingTop.PING_MODE_TCP_PING: 'TCP PING',  # needs a host with an open port, default: 80
         }
 
     @staticmethod
     def get_ping_modes_readable(separator="\n"):
         ret = ''
         for _id, _label in PingTop.get_ping_modes().items():
+            # this mode needs a bit of a longer description for the help
+            if _id == PingTop.PING_MODE_TCP_PING:
+                _label += '(needs a host with an open port, default: 80)'
             ret += "{0}: {1}{2}".format(_id, _label, separator)
 
         return ret
@@ -109,6 +112,9 @@ class PingTop:
             file_handle.close()
 
     def do_render(self):
+        self.renderer.mode_id = self.ping_mode
+        self.renderer.mode_name = self.get_ping_modes()[self.ping_mode]
+        self.renderer.mode_port = self.tcp_ping_port
         self.renderer.render(self.time_list, self.started, self.total_pings, self.total_errors)
 
     def run(self):

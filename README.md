@@ -45,7 +45,11 @@ docker build -t pingtop ./
 
 run
 ```bash
-docker run -it -e HOST='twitch.tv' pingtop
+docker run -it --rm -e HOST=twitch.tv pingtop
+```
+
+```bash
+docker run -it --rm pingtop --host twitch.tv
 ```
 
 ## CROSS-LINKS

@@ -11,14 +11,14 @@ WORKDIR /app
 ENV HOST wikipedia.de
 
 # Run app.py when the container launches
-CMD ["python", "app.py"]
+ENTRYPOINT ["python", "app.py"]
 
 # docker best practices:
 # put all changes to the image at the end of the file to create less layers
 
 # Update the image to the latest packages
-RUN apt-get update && apt-get upgrade -y
-RUN apt-get install -y iputils-ping
+# use && to reduce the amount of layers created
+RUN apt-get update -y && apt-get install -y iputils-ping
 
 # Copy the current directory contents into the container at /app
 COPY . /app

@@ -101,10 +101,10 @@ class RenderPing:
         print(" median:      {: 10.5f}".format(median), end=' ' * 5)
         print(" s.deviation: {: 10.5f}".format(deviation))
 
-        print(" ERROR:        {: 6}".format(error_count))
-        print(" ERRORS TOTAL: {: 6}".format(total_errors))
-        print(" PINGS TOTAL:  {: 6}".format(total_pings))
-        print(" ERROR RATE:  {: 6.2f}%".format(RenderPing.get_percentage(total_errors, total_pings)))
+        print(" ERROR:           {: 6}".format(error_count))
+        print(" ERRORS TOTAL:    {: 6}".format(total_errors))
+        print(" PINGS TOTAL:     {: 6}".format(total_pings))
+        print(" ERROR RATE:     {: 6.2f}%".format(RenderPing.get_percentage(total_errors, total_pings)))
 
     def add_column(self, height):
         """

@@ -68,6 +68,11 @@ class PingShell:
             # print(out)
             if ping.returncode == 0:
                 re_result = re.search("=([0-9]*)ms", str(out))
+
+                # none can happen when the ping does something unexpected
+                if re_result is None:
+                    return -1
+
                 avg_rtt = re_result.group(1)
         except subprocess.TimeoutExpired:
             ping.kill()

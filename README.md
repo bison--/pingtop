@@ -14,6 +14,10 @@ Specify a host to ping with "--host"
 ./start.py --host "twitch.tv"
 ```
 
+```bash
+python3 .\start.py --host 'heise.de' --mode 2 --port 80
+```
+
 ### advanced / help
 
 ```
@@ -36,7 +40,16 @@ optional arguments:
                         --log /var/logs/pingtest.csv
 ```
 
-## DOCKER BUILD & RUN
+## DOCKER 
+
+### RUN
+
+Run the pre-build container directly from dockerhub:
+```bash
+docker run -it --rm generalbison/pingtop --host twitch.tv --mode 2
+```
+
+### BUILD and RUN
 
 cd into the cloned repository dir
 ```bash

@@ -43,7 +43,7 @@ class RenderPing:
                 error_count += 1
 
         # fill bar with empty values
-        for i in range(self.renderWidth - len(time_list)):
+        for _ in range(self.renderWidth - len(time_list)):
             self.add_column(-2)
 
         times_bigger_zero = []
@@ -72,7 +72,7 @@ class RenderPing:
         print('\x1b[2J')
         print("\033[0;0H")
 
-        if self.host_name is not '':
+        if self.host_name != '':
             port_string = ''
             if self.mode_id == 2:
                 port_string = 'port: {0}'.format(self.mode_port)

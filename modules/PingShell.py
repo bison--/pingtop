@@ -42,7 +42,7 @@ class PingShell:
         ping = subprocess.Popen(["ping", "-c", "1", host], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
         try:
-            [out, err] = ping.communicate(timeout=timeout)
+            [out, _] = ping.communicate(timeout=timeout)
             # print(out)
             if ping.returncode == 0:
                 re_result = re.search(r"rtt min/avg/max/mdev = (\d+.\d+)/(\d+.\d+)/(\d+.\d+)/(\d+.\d+)", str(out))
@@ -64,7 +64,7 @@ class PingShell:
         ping = subprocess.Popen(["ping", "-n", "1", host], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
         try:
-            [out, err] = ping.communicate(timeout=timeout)
+            [out, _] = ping.communicate(timeout=timeout)
             # print(out)
             if ping.returncode == 0:
                 re_result = re.search("=([0-9]*)ms", str(out))

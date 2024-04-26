@@ -51,7 +51,7 @@ class PingTop:
         elif self.ping_mode == PingTop.PING_MODE_TCP_PING:
             delay = self._ping_tcp_ping()
         else:
-            raise Exception('PING method not implemented.')
+            raise NotImplemented('PING method not implemented.')
 
         self.total_pings += 1
 

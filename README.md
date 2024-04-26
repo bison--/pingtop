@@ -68,7 +68,7 @@ docker run -it --rm pingtop --host twitch.tv
 ## CROSS-LINKS
 
 On dockerhub: https://hub.docker.com/r/generalbison/pingtop
-On github: https://github.com/bison--/pingtop
+On gitHub: https://github.com/bison--/pingtop
 
 # TODO
 

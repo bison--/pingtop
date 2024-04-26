@@ -18,7 +18,9 @@ ENTRYPOINT ["python", "app.py"]
 
 # Update the image to the latest packages
 # use && to reduce the amount of layers created
-RUN apt-get update -y && apt-get install -y iputils-ping
+RUN apt-get update -y  \
+    && apt-get install -y iputils-ping  \
+    && rm -rf /var/lib/apt/lists/{apt,dpkg,cache,log} /tmp/* /var/tmp/*  # clean up
 
 # Copy the current directory contents into the container at /app
 COPY . /app

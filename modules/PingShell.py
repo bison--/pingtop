@@ -29,8 +29,9 @@ class PingShell:
     def ping(host, timeout):
         if PingShell.get_os() == PingShell.OS_WIN:
             return PingShell._ping_win(host, timeout)
+        elif PingShell.get_os() == PingShell.OS_MAC:
+            raise NotImplementedError('Mac OS is not supported.')
         else:
-            # TODO: check if the Mac-ping works like the Linux ping
             return PingShell._ping_linux(host, timeout)
 
     @staticmethod
@@ -67,7 +68,7 @@ class PingShell:
             [out, _] = ping.communicate(timeout=timeout)
             # print(out)
             if ping.returncode == 0:
-                re_result = re.search("=([0-9]*)ms", str(out))
+                re_result = re.search("=(\d*)ms", str(out))
 
                 # none can happen when the ping does something unexpected
                 if re_result is None:
